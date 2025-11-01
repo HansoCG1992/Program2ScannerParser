@@ -1,0 +1,14 @@
+/* Complex program with multiple features */
+x := 10
+y := 20
+z := x + y * 2
+
+if z >= 50 then begin
+    print z
+    z := z - 10
+end
+
+while z > 0 begin
+    print z
+    z := z / 2
+end

@@ -1,0 +1,6 @@
+/* Test while loop */
+counter := 1
+while counter < 10 begin
+    print counter
+    counter := counter + 1
+end
