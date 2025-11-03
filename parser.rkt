@@ -1,6 +1,6 @@
 #lang racket
 
-(provide parse)
+(provide parse run-all-tests)
 
 ;; Token structure: (token-type value line-number)
 (struct token (type value line) #:transparent)
@@ -301,36 +301,22 @@
 
 ;; Parse stmt: if-stmt | while-stmt | assign-stmt | read-stmt | print-stmt | compound-stmt
 (define (parse-stmt)
-  (cond
-    [(match-token 'IF) (parse-if-stmt)]
-    [(match-token 'WHILE) (parse-while-stmt)]
-    [(match-token 'READ) (parse-read-stmt)]
-    [(match-token 'PRINT) (parse-print-stmt)]
-    [(match-token 'ID)
-     ;; Could be assign-stmt or start of compound-stmt
-     ;; Check if followed by ASSIGN or SEMI
-     (let ([next (peek-token)])
-       (if (equal? (token-type next) 'ASSIGN)
-           (parse-assign-stmt)
-           (parse-compound-stmt)))]
-    [else
-     (error (format "Syntax error on line ~a: unexpected token ~a"
-                    (token-line (current-token))
-                    (token-type (current-token))))]))
-
-;; Parse compound-stmt: stmt {; stmt}*
-(define (parse-compound-stmt)
+  ;; Parse the first statement
   (let ([first-stmt (parse-single-stmt)])
-    (let loop ([stmts (list first-stmt)])
-      (if (match-token 'SEMI)
-          (begin
-            (advance-token) ; consume semicolon
-            (let ([stmt (parse-single-stmt)])
-              (loop (append stmts (list stmt)))))
-          (if (= (length stmts) 1)
-              first-stmt
-              (node 'compound-stmt stmts))))))
-
+    ;; Check if there are more statements on the same line (semicolon)
+    (if (match-token 'SEMI)
+        ;; This is a compound statement
+        (let loop ([stmts (list first-stmt)])
+          (if (match-token 'SEMI)
+              (begin
+                (advance-token) ; consume semicolon
+                (let ([stmt (parse-single-stmt)])
+                  (loop (append stmts (list stmt)))))
+              (if (= (length stmts) 1)
+                  first-stmt
+                  (node 'compound-stmt stmts))))
+        ;; Just a single statement
+        first-stmt)))
 ;; Parse a single statement (not compound)
 (define (parse-single-stmt)
   (cond
@@ -347,9 +333,9 @@
 ;; Parse if-stmt: if expr comp-op expr then begin stmt-list end {else begin stmt-list end}
 (define (parse-if-stmt)
   (expect-token 'IF)
-  (let ([left-expr (parse-expr)])
+  (let ([left-expr (parse-term)])
     (let ([comp-op (expect-token 'COMP-OP)])
-      (let ([right-expr (parse-expr)])
+      (let ([right-expr (parse-term)])
         (expect-token 'THEN)
         (expect-token 'BEGIN)
         (let ([then-stmts (parse-stmt-list)])
@@ -366,9 +352,9 @@
 ;; Parse while-stmt: while expr comp-op expr begin stmt-list end
 (define (parse-while-stmt)
   (expect-token 'WHILE)
-  (let ([left-expr (parse-expr)])
+  (let ([left-expr (parse-term)])
     (let ([comp-op (expect-token 'COMP-OP)])
-      (let ([right-expr (parse-expr)])
+      (let ([right-expr (parse-term)])
         (expect-token 'BEGIN)
         (let ([stmts (parse-stmt-list)])
           (expect-token 'END)
@@ -481,3 +467,78 @@
         (displayln "Accept")
         (pretty-print tree)
         tree))))
+
+;; ============================================================================
+;; HELPER MESSAGE - Displays when module loads
+;; ============================================================================
+
+(displayln "")
+(displayln "========================================")
+(displayln "Parser for Simple Programming Language")
+(displayln "========================================")
+(displayln "")
+(displayln "To run tests, use the following commands:")
+(displayln "")
+(displayln "  (parse \"test1_simple.txt\")           - Basic assignment and print")
+(displayln "  (parse \"test2_if_else.txt\")          - If-else conditionals")
+(displayln "  (parse \"test3_while.txt\")            - While loops")
+(displayln "  (parse \"test4_complex.txt\")          - Complex expressions")
+(displayln "  (parse \"test5_float.txt\")            - Floating-point numbers")
+(displayln "  (parse \"test6_error.txt\")            - Syntax error (should fail)")
+(displayln "  (parse \"test7_multiline_comment.txt\") - Multi-line comments")
+(displayln "  (parse \"test8_compound.txt\")         - Compound statements")
+(displayln "")
+(displayln "Valid programs will output 'Accept' followed by the parse tree.")
+(displayln "Invalid programs will show a syntax error message.")
+(displayln "")
+(displayln "OR run all tests at once:")
+(displayln "  (run-all-tests)                        - Execute all 8 test files")
+(displayln "========================================")
+(displayln "")
+
+;; ============================================================================
+;; RUN ALL TESTS - Convenience function to run all test files
+;; ============================================================================
+
+(define (run-all-tests)
+  (displayln "")
+  (displayln "========================================")
+  (displayln "Running All Tests")
+  (displayln "========================================")
+  (displayln "")
+  
+  (displayln ">>> TEST 1: test1_simple.txt (Basic assignment and print)")
+  (parse "test1_simple.txt")
+  (displayln "")
+  
+  (displayln ">>> TEST 2: test2_if_else.txt (If-else conditionals)")
+  (parse "test2_if_else.txt")
+  (displayln "")
+  
+  (displayln ">>> TEST 3: test3_while.txt (While loops)")
+  (parse "test3_while.txt")
+  (displayln "")
+  
+  (displayln ">>> TEST 4: test4_complex.txt (Complex expressions)")
+  (parse "test4_complex.txt")
+  (displayln "")
+  
+  (displayln ">>> TEST 5: test5_float.txt (Floating-point numbers)")
+  (parse "test5_float.txt")
+  (displayln "")
+  
+  (displayln ">>> TEST 6: test6_error.txt (Syntax error - should fail)")
+  (parse "test6_error.txt")
+  (displayln "")
+  
+  (displayln ">>> TEST 7: test7_multiline_comment.txt (Multi-line comments)")
+  (parse "test7_multiline_comment.txt")
+  (displayln "")
+  
+  (displayln ">>> TEST 8: test8_compound.txt (Compound statements)")
+  (parse "test8_compound.txt")
+  (displayln "")
+  
+  (displayln "========================================")
+  (displayln "All Tests Complete")
+  (displayln "========================================"))
