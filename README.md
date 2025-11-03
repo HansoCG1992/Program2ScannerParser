@@ -175,9 +175,9 @@ Possible improvements include:
 
 ## Author
 
-[Your Name]
-[Course Name]
-[Date]
+Cole Hanson
+CS441
+11/2/2025
 
 ## License
 
