@@ -22,7 +22,6 @@ This document lists all AI-generated code that was incorporated into the final p
 ## Token and Node Structures
 
 **Source:** AI-generated (Prompt 1)  
-**Modifications:** None  
 **Location:** Lines 5-9 in parser.rkt
 
 ```racket
@@ -37,8 +36,7 @@ This document lists all AI-generated code that was incorporated into the final p
 
 ## Lexer (Tokenizer)
 
-**Source:** AI-generated (Prompt 1)  
-**Modifications:** None  
+**Source:** AI-generated (Prompt 2)  
 **Location:** Lines 11-250 in parser.rkt
 
 ### Character Classification Functions
@@ -286,8 +284,7 @@ This document lists all AI-generated code that was incorporated into the final p
 
 ## Parser Helper Functions
 
-**Source:** AI-generated (Prompt 2)  
-**Modifications:** None  
+**Source:** AI-generated (Prompt 3)  
 **Location:** Lines 252-286 in parser.rkt
 
 ```racket
@@ -346,7 +343,7 @@ This document lists all AI-generated code that was incorporated into the final p
 
 ## Statement Parsing Functions
 
-**Source:** AI-generated (Prompts 3 & 6)  
+**Source:** AI-generated (Prompts 4 & 7)  
 **Modifications:** Modified parse-if-stmt and parse-while-stmt to use parse-term instead of parse-expr (bug fix). Modified parse-stmt to handle compound statements with semicolons (bug fix).  
 **Location:** Lines 288-346 in parser.rkt
 
@@ -439,7 +436,7 @@ This document lists all AI-generated code that was incorporated into the final p
 
 ## Expression Parsing Functions
 
-**Source:** AI-generated (Prompt 4)  
+**Source:** AI-generated (Prompt 5)  
 **Modifications:** None  
 **Location:** Lines 348-419 in parser.rkt
 
@@ -517,7 +514,7 @@ This document lists all AI-generated code that was incorporated into the final p
 
 ## Main Parse Function
 
-**Source:** AI-generated (Prompt 5)  
+**Source:** AI-generated (Prompt 6)  
 **Modifications:** None  
 **Location:** Lines 421-434 in parser.rkt
 
@@ -544,7 +541,7 @@ This document lists all AI-generated code that was incorporated into the final p
 
 ## User Interface Elements
 
-**Source:** AI-generated (Prompt 7)  
+**Source:** AI-generated (Prompt 8)  
 **Modifications:** None  
 **Location:** Lines 436-545 in parser.rkt
 
@@ -578,7 +575,7 @@ This document lists all AI-generated code that was incorporated into the final p
 ```
 
 ### Run All Tests Function
-
+**Source:** AI-generated (Prompt 9)  
 ```racket
 ;; Run all tests function
 (define (run-all-tests)
